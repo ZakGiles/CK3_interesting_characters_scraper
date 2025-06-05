@@ -1,12 +1,23 @@
+from selenium import webdriver
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+import time
 import random
 
-url = "https://ck3.paradoxwikis.com/Interesting_characters"
-page = urlopen(url)
-html = page.read().decode("utf-8")
+
+browser=webdriver.Chrome()
+
+browser.get("https://ck3.paradoxwikis.com/Interesting_characters")
+time.sleep(1)
+html = browser.page_source
+browser.close()
 soup = BeautifulSoup(html, "html.parser")
-people = [l.text for l in soup.find_all("b")][:-1]
+people=[]
+for li in soup.find_all("li"):
+    b = li.find("b")
+    if b:
+        people.append(li.find("b").text)
+    
 
 with open("interesting_characters.csv", "w", encoding="utf-8") as file:
     for l in people:
